@@ -40,6 +40,8 @@ import ReactDOM from "react-dom";
 
 #### 컴포넌트 종류
 
+- 라이프 사이클을 있냐/없냐 로 구분 되어 있다. 
+
 1. Component : 모든 기능을 다 포함하고 있는 컴포넌트
 
 2. PureComponent : PureComponent 는 Component 와 동일하게 동작합니다. 다만, 순수 컴포넌트는 당신을 위해 shouldComponentUpdate 함수를 다뤄준다는 게 하나의 차이점입니다. 
