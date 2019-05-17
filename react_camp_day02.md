@@ -221,3 +221,57 @@ export default connect(
 
 
 
+## action type과 action이 합쳐진 단일 구조 만들기
+
+#### 라이브러리 설치
+
+```shell
+$ npm i typesafe-actions
+```
+
+#### Action Creator 만들기
+
+```javascript
+import { createAction } from "typesafe-actions";
+
+export const fetchSuccess = createAction("@fetch/success", resolve => {
+  return () => resolve();
+});
+
+export const fetchFailure = createAction("@fetch/failure", resolve => {
+  return () => resolve();
+});
+
+```
+
+#### Reducer 함수에서 Action 정보 가져오기
+
+```typescript
+import { getType, ActionType } from "typesafe-actions";
+
+...
+
+// getType함수에 Action cretors함수를 인자로 넣어주면 type값을 가져올수 있다.
+const const mainReducers = (
+  state: StoreState = initState,
+  action: ActionType<typeof Actions>
+) => {
+  switch (action.type) {
+    case getType(Actions.fetchSuccess):
+      return {
+        ...state,
+        success: state.success + Math.floor(Math.random() * (100 - 1))
+      };
+    case getType(Actions.fetchFailure):
+      return {
+        ...state,
+        failure: state.failure + Math.floor(Math.random() * 2 - 0)
+      };
+	
+  ...
+  
+  
+} 
+
+```
+
