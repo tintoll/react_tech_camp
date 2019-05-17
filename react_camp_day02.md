@@ -100,7 +100,122 @@ store.dispatch({
 
   
 
+## React에서 Redux사용
 
+#### react-redux 설치
+
+- react 환경에 사용하기 위한 react-redux를 추가로 설치해준다.
+
+  ```shell
+  $ npm i react-redux
+  ```
+
+#### 진입점(index.js) 설정
+
+```javascript
+...
+
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+// 1. reducers함수를 인자로 주어서 store를 생성한다.
+const store = createStore(reducers);
+
+// 2. Provider컴포넌트를 이용하여 store를 적용할 최상위 컴포넌트를 감싸줍니다.
+// 3. Provider store속성으로 생성한 store 넣어줍니다.
+ReactDom.render( 
+  <Provider store={store}>
+  	<App />
+  </Provider>
+  , document.querySelector('#root'));
+```
+
+#### Actions 만들기
+
+```javascript
+// 1. 액션 타입을 정의 합니다.
+export const FETCH_FAILURE = '@fetch/failure';
+export const FETCH_SUCCESS = '@fetch/success';
+
+// 2. 액션 객체를 만들어주는 액션생성자(Action Creator) 함수를 만듭니다.
+export const fetchFailure = () => ({
+  type : FETCH_FAILURE,
+  payload : null
+});
+export const fetchSuccess = () => ({
+  type : FETCH_SUCCESS,
+  payload : null
+});
+```
+
+#### Reducers 함수 만들기 
+
+````javascript
+// 1. 초기 state 구성
+const initState = {
+  success : 0,
+  failure : 0
+}
+// 2. 액션 타입에 따라서 state 객체를 리턴하는 reducers함수 작성
+export const reducers = (state = initState, action) {
+  switch(action.type) {
+    case FETCH_FAILURE :
+      return {
+        ...state,
+        failure: state.failure + Math.floor(Math.random() * 2 - 0)
+      }
+    case FETCH_SUCCESS :  
+      return {
+        ...state,
+        success: state.success + Math.floor(Math.random() * (100 - 1)),
+      }
+    default : 
+      return Object.assign({},state);
+  }
+}
+````
+
+#### store를 사용할 컴포넌트 설정
+
+````javascript
+...
+import {connect} from 'react-redux';
+import { fetchSuccess, fetchFailure} from './actions';
+class MonitorApp extends Component {
+  
+  ...
+  // 4. 내부에서 해당 값을 props를 통해서 사용하면 된다. 
+  this.props.fetchSuccess();
+	this.props.fetchFailure();
+
+  ...
+  
+  <Monitor success={this.props.success} success={this.props.failure} />
+ 
+}
+
+// 1. mapStateToProps함수를 만든다 
+//  -> store 에 있는 사용할 상태를 컴포넌트 props로 넣어준다.
+const mapStateToProps = (state) => ({
+  ...state // 전체를 다 줄때
+});
+// 2. mapDispatchToProps함수를 만든다.
+//  -> 액션에 해당하는 메소드를 컴포넌트 props로 넣어준다.
+const mapDispatchToProps = (dispatch) => ({
+  fetchSuccess : () => dispatch(fetchSuccess()),
+  fetchFailure : () => dispatch(fetchFailure())
+})
+
+// 3. connect함수의 인자로 mapStateToProps,mapDispatchToProps 넣어주고 적용할 컴포넌트를 지정해준다.
+export default connect(
+	mapStateToProps,
+  mapDispatchToProps
+)(MonitorApp);
+````
+
+
+
+## 컴포넌트 분리
 
 
 
