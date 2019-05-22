@@ -147,6 +147,8 @@ const fibonacciFunc = function (max) {
     // Symbol.iterator 메소드를 구현하여 이터러블 프로토콜을 준수
     
     // Java에서 new Interface( override 구현)와 비슷 한거같다.
+    //  [Symbol.iterator]이 나오는 데 이건 그냥 반복되는 규칙을 내부적으로 처리하는 것을 만드는 부분이라고 생각하시면 됩니다. 
+    // Symbol 자체가 자바스크립트 내부에서 일어나는 일에 접근할 수 있는 값이거든요. 그 중에서 iterator 속성은 반복을 담당합니다
     [Symbol.iterator]() { 
       // Symbol.iterator 메소드는 next 메소드를 소유한 이터레이터를 반환해야 한다.
       // next 메소드는 이터레이터 리절트 객체를 반환
@@ -177,4 +179,145 @@ for (const num of fibonacciFunc(10)) {
 
 
 ## Generator
+
+iterator의 단점 한번 생성하면 그저 무한히 반복할 뿐입니다. 이러한  단점을 보안하기 위해 나온게 Generator 이다
+
+
+
+제너레이터(Generator) 함수는 이터러블을 생성하는 함수이다. 제너레이터 함수를 사용하면 이터레이션 프로토콜을 준수해 이터러블을 생성하 방식보다 간편하게 구현할 수 있다. 또한 제너레이터 함수는 비동기 처리에 유용하게 사용된다. 
+
+```javascript
+// 이터레이션 프로토콜을 구현하여 무한 이터러블을 생성하는 함수
+const createInfinityByIteration = function () {
+  let i = 0; // 자유 변수
+  return {
+    [Symbol.iterator]() { return this; },
+    next() {
+      return { value: ++i };
+    }
+  };
+};
+for (const n of createInfinityByIteration()) {
+  if (n > 5) break;
+  console.log(n); // 1 2 3 4 5
+}
+
+
+// 무한 이터러블을 생성하는 제너레이터 함수
+function* createInfinityByGenerator() {
+  let i = 0;
+  while (true) { yield ++i; }
+}
+for (const n of createInfinityByGenerator()) {
+  if (n > 5) break;
+  console.log(n); // 1 2 3 4 5
+}
+```
+
+
+
+제너레이터 함수는 일반 함수와 같이 함수의 **코드 블록을 한 번에 실행하지 않고 함수 코드 블록의 실행을 일시 중지했다가 필요한 시점에 재시작할 수 있는 특수한 함수**이다.
+
+```javascript
+function* counter() {
+  yield 1;                  // 첫번째 호출 시에 이 지점까지 실행된다.
+  yield 2;                  // 두번째 호출 시에 이 지점까지 실행된다. 
+
+  // yield*을 할 수도 있습니다. 해당 값을 자동으로 쪼개 반복합니다.(Symbol.iterator가 있는 값들만 쪼갤 수 있습니다) 문자열이나 배열, 다른 반복기 값을 넣을 수 있습니다. 이게 다른 점이죠.
+  yield* [4, 5, 6];
+
+  let inValue = yield;
+  console.log('inValue : ', inValue);
+  inValue = yield;
+  console.log('inValue : ', inValue);
+}
+
+const generatorObj = counter();
+console.log(generatorObj.next()); // {value: 1, done: false}
+console.log(generatorObj.next()); // {value: 2, done: false}
+console.log(generatorObj.next()); // {value: 4, done: false}
+console.log(generatorObj.next()); // {value: 5, done: false}
+console.log(generatorObj.next()); // {value: 6, done: false}
+// next를 통해 생성기에 값을 전달해줄 수도 있습니다. 전달해준 값은 yield가 받습니다. 
+// yield가 받은 값과 next로 나오는 값은 별개입니다. 또 첫 번째 값 전달은 무시된다는 것을 기억하세요!
+console.log(generatorObj.next(8));
+console.log(generatorObj.next(9));
+console.log(generatorObj.next()); // {value: undefined, done: true}
+```
+
+일반 함수를 호출하면 return 문으로 반환값을 리턴하지만 **제너레이터 함수를 호출하면 제너레이터를 반환**한다. 이 **제너레이터는 이터러블(iterable)이면서 동시에 이터레이터(iterator)인 객체이다.** 다시 말해 제너레이터 함수가 생성한 제너레이터는 Symbol.iterator 메소드를 소유한 이터러블이다. 그리고 제너레이터는 next 메소드를 소유하며 next 메소드를 호출하면 **value, done 프로퍼티를 갖는 이터레이터 리절트 객체를 반환하는 이터레이터**이다.
+
+
+
+#### 비동기 처리
+
+제너레이터를 사용해 비동기 처리를 동기 처리처럼 구현할 수 있다. 다시 말해 비동기 처리 함수가 처리 결과를 반환하도록 구현할 수 있다.
+
+```javascript
+const fetch = require('node-fetch');
+
+function getUser(genObj, username) {
+  fetch(`https://api.github.com/users/${username}`)
+    .then(res => res.json())
+    // 1.제너레이터 객체에 비동기 처리 결과를 전달한다.
+    .then(user => genObj.next(user.name));
+}
+
+// 제너레이터 객체 생성
+const g = (function* () {
+  let user;
+  // 2. 비동기 처리 함수가 결과를 반환한다.
+  // 비동기 처리의 순서가 보장된다.
+  user = yield getUser(g, 'jeresig');
+  console.log(user); // John Resig
+
+  user = yield getUser(g, 'ahejlsberg');
+  console.log(user); // Anders Hejlsberg
+
+  user = yield getUser(g, 'ungmo2');
+  console.log(user); // Ungmo Lee
+}());
+
+// 제너레이터 함수 시작
+g.next();
+```
+
+비동기 처리의 순서가 보장되서 동기 코드처럼 보이게 할수 있다. Generator 단점은 async 함수를 매번 구현해줘야 한다는 건데요.  **async/await**로 해결됩니다. 
+
+#### interator과 다른 점은 return과 throw를 호출할 수도 있습니다. 
+
+generator.return();하는 순간 생성기는 멈추고, done은 true가 됩니다. 반복을 멈추고 싶을 때 사용하면 됩니다. 
+
+generator.throw();는 return처럼 생성기를 종료하고, 추가로 에러를 만들어냅니다. 따라서 try catch 구문에서 catch로 보낼 수 있습니다.
+
+
+
+## Async-await
+
+```javascript
+const fetch = require('node-fetch');
+
+// Promise를 반환하는 함수 정의
+function getUser(username) {
+  return fetch(`https://api.github.com/users/${username}`)
+    .then(res => res.json())
+    .then(user => user.name);
+}
+
+async function getUserAll() {
+  let user;
+  user = await getUser('jeresig');
+  console.log(user);
+
+  user = await getUser('ahejlsberg');
+  console.log(user);
+
+  user = await getUser('ungmo2');
+  console.log(user);
+}
+
+getUserAll();
+```
+
+
 
