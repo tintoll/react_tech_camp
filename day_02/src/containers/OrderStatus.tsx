@@ -6,11 +6,8 @@ import { StoreState } from "../types";
 import { fetchFailure, fetchSuccess } from "../actions";
 
 interface OrderStatusProps {
-  monitoring: boolean;
   success: number;
   failure: number;
-  fetchSuccess(): void;
-  fetchFailure(): void;
 }
 
 interface OrderStatusState {
@@ -21,14 +18,6 @@ const mapStateToProps = (state: StoreState) => ({
   ...state
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchSuccess: () => {
-    dispatch(fetchSuccess());
-  },
-  fetchFailure: () => {
-    dispatch(fetchFailure());
-  }
-});
 
 class OrderStatus extends React.PureComponent<
   OrderStatusProps,
@@ -41,18 +30,6 @@ class OrderStatus extends React.PureComponent<
   };
 
   componentDidUpdate(prevProps: any) {
-    if (prevProps.monitoring !== this.props.monitoring) {
-      if (this.props.monitoring) {
-        this.timerId = setInterval(() => {
-          this.props.fetchSuccess();
-          this.props.fetchFailure();
-        }, 200);
-      } else {
-        clearInterval(this.timerId);
-        this.timerId = null;
-      }
-    }
-
     if (
       prevProps.success !== this.props.success ||
       prevProps.failure !== this.props.failure
@@ -84,6 +61,5 @@ class OrderStatus extends React.PureComponent<
 }
 
 export const OrderStatusContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(OrderStatus);

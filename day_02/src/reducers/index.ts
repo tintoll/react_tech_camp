@@ -22,16 +22,6 @@ const mainReducers = (
         ...state,
         failure: state.failure + Math.floor(Math.random() * 2 - 0)
       };
-    case getType(Actions.startMonitoring):
-      return {
-        ...state,
-        monitoring: true
-      };
-    case getType(Actions.stopMonitoring):
-      return {
-        ...state,
-        monitoring: false
-      };
     default:
       return Object.assign({}, state);
   }
