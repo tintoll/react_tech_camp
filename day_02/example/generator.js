@@ -1,33 +1,54 @@
-// 제너레이터 함수
-// 코루틴의 일종이다.
-function* foo() {
-  // yield 10; // 값을 줄수 있다 .
-  yield;
-  return 100;
+const fetch = require('node-fetch');
+
+
+function* counter() {
+  yield 1;                  // 첫번째 호출 시에 이 지점까지 실행된다.
+  yield 2;                  // 두번째 호출 시에 이 지점까지 실행된다. 
+
+  // yield*을 할 수도 있습니다. 해당 값을 자동으로 쪼개 반복합니다.(Symbol.iterator가 있는 값들만 쪼갤 수 있습니다) 문자열이나 배열, 다른 반복기 값을 넣을 수 있습니다. 이게 다른 점이죠.
+  yield* [4, 5, 6];
+
+  let inValue = yield;
+  console.log('inValue : ', inValue);
+  inValue = yield;
+  console.log('inValue : ', inValue);
 }
 
-const result = foo();
-console.log(result); // 제너레이터가 넘어온다.
-// 반복자 인터페이스를 가지고 있는
+const generatorObj = counter();
+console.log(generatorObj.next()); // {value: 1, done: false}
+console.log(generatorObj.next()); // {value: 2, done: false}
+console.log(generatorObj.next()); // {value: 4, done: false}
+console.log(generatorObj.next()); // {value: 5, done: false}
+console.log(generatorObj.next()); // {value: 6, done: false}
+// next를 통해 생성기에 값을 전달해줄 수도 있습니다. 전달해준 값은 yield가 받습니다. 
+// yield가 받은 값과 next로 나오는 값은 별개입니다. 또 첫 번째 값 전달은 무시된다는 것을 기억하세요!
+console.log(generatorObj.next(8));
+console.log(generatorObj.next(9));
+console.log(generatorObj.next()); // {value: undefined, done: true}
 
-// 이때 함수를 실행한다. 언제까지 실행하냐? return을 만나거나  yield를 만날때까지
-console.log(result.next()); // object({ value:null ,done: false}) false이면 아직 안끝났다.
-console.log(result.next()); // object({ value:100 ,done: true})
-console.log(result.next()); // undefined
 
-// 제너레이터는 무한 루프를 타도 된다고 함다.
-function* foo2() {
-  let v = 0;
 
-  // yield* [1,2,3]; // 뒤를 순회하면서 실행됨
-
-  while (true) {
-    const r = yield ++v;
-    console.log("r : ", r);
-  }
+function getUser(genObj, username) {
+  fetch(`https://api.github.com/users/${username}`)
+    .then(res => res.json())
+    // 1.제너레이터 객체에 비동기 처리 결과를 전달한다.
+    .then(user => genObj.next(user.name));
 }
 
-// next(값을 넣으면) 함수에 들어간다.
-const result2 = foo2();
-console.log(result.next());
-console.log(result.next(2));
+// 제너레이터 객체 생성
+const g = (function* () {
+  let user;
+  // 2. 비동기 처리 함수가 결과를 반환한다.
+  // 비동기 처리의 순서가 보장된다.
+  user = yield getUser(g, 'jeresig');
+  console.log(user); // John Resig
+
+  user = yield getUser(g, 'ahejlsberg');
+  console.log(user); // Anders Hejlsberg
+
+  user = yield getUser(g, 'ungmo2');
+  console.log(user); // Ungmo Lee
+}());
+
+// 제너레이터 함수 시작
+g.next();

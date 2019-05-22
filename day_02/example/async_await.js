@@ -1,36 +1,22 @@
-function foo() {
-  return new Promise(resolve => {
-    setImmediate(() => {
-      resolve(100);
-    }, 1000);
-  });
+const fetch = require('node-fetch');
+
+// Promise를 반환하는 함수 정의
+function getUser(username) {
+  return fetch(`https://api.github.com/users/${username}`)
+    .then(res => res.json())
+    .then(user => user.name);
 }
 
-// foo().then(r => console.log(r));
-// 위의 문법을 아래와 같이 하고 싶다.
-// const result = await foo();
+async function getUserAll() {
+  let user;
+  user = await getUser('jeresig');
+  console.log(user);
 
-async function main() {
-  const result = await foo();
-  console.log(result);
-}
-main();
+  user = await getUser('ahejlsberg');
+  console.log(user);
 
-// 제너레이터로 구현하기
-function* main2() {
-  const result = yield foo();
-  console.log("result : ", result);
+  user = await getUser('ungmo2');
+  console.log(user);
 }
 
-const generator = main2();
-const lt = generator.next();
-// 일반적을 runner라고 부른다고함.
-console.log(lt); // Object
-lt.value
-  .then(r => {
-    generator.next(r);
-  })
-  .catch(err => generator.throw(err)); // iterator는 throw()함수도 있음.
-
-// iterator는 throw()함수도 있음.
-// iterator는 return()도 있음.: 비동기 작업하다기 캔슬할때 사용할수 잇음.
+getUserAll();
