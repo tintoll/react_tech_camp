@@ -1,39 +1,56 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import endpoint from "./endpoint.config";
 
-interface RequestSuccessResp {
+interface IApiSuccessMessage {
   status: string;
 }
+interface IApiError {
+  status : string;
+  statusCode : number;
+  errorMessage : string;
+}
 
-interface numberOfSuccessfulOrderResp extends RequestSuccessResp {
+export class ApiError implements IApiError {
+  status : string = "";
+  statusCode : number = 0;
+  errorMessage : string = "";
+
+  constructor(err: AxiosError) {
+    this.status = err.response && err.response.data.status;
+    this.statusCode = err.response && err.response.data.statusCode;
+    this.errorMessage = err.response && err.response.data.errorMessage;
+  }
+}
+
+interface INumberOfSuccessfulOrderResponse extends IApiSuccessMessage {
   result: {
     success: number;
   };
 }
 
-interface numberOfFailedOrderResp extends RequestSuccessResp {
+interface INumberOfFailedOrderResponse extends IApiSuccessMessage {
   result: {
     failure: number;
   };
 }
 
 export function fetchNumberOfSuccessfulOrder(): Promise<
-  numberOfSuccessfulOrderResp
+  INumberOfSuccessfulOrderResponse
 > {
   // 한번 더 Wrapping 해준거임. axios에서 다른걸로 변경하기 쉽게
   return new Promise((resolve, reject) => {
     axios
-      .get(endpoint.orders.request.success)
+      .get(`${endpoint.orders.request.success}?error=random`)
       .then((resp: AxiosResponse) => resolve(resp.data))
-      .catch(reject);
+      .catch((err:AxiosError ) => reject(new ApiError(err)) );
   });
 }
 
-export function fetchNumberOfFailedOrder(): Promise<numberOfFailedOrderResp> {
+export function fetchNumberOfFailedOrder(): Promise<INumberOfFailedOrderResponse> {
   return new Promise((resolve, reject) => {
     axios
       .get(endpoint.orders.request.failure)
       .then((resp: AxiosResponse) => resolve(resp.data))
-      .catch(reject);
+      .catch((err: AxiosError) => reject(new ApiError(err)));
   });
 }

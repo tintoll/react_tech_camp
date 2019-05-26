@@ -6,7 +6,8 @@ const initState: StoreState = {
   monitoring: false,
   monitoringDuration: 200,
   success: 0,
-  failure: 0
+  failure: 0,
+  notifications : [],
 };
 const mainReducers = (
   state: StoreState = initState,
@@ -35,6 +36,14 @@ const mainReducers = (
         ...state,
         ...action.payload
       };
+    case getType(Actions.addNotification) :
+      return {
+        ...state,
+        notifications : [
+          ...state.notifications,
+          {id : Date.now(), ...action.payload}
+        ]  
+      }
     default:
       return Object.assign({}, state);
   }

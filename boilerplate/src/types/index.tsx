@@ -3,4 +3,11 @@ export interface StoreState {
   monitoringDuration: number;
   success: number;
   failure: number;
+  notifications: INotification[];
+}
+
+export interface INotification {
+  id : number;
+  type : string;
+  msg : string;
 }

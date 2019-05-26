@@ -21,3 +21,7 @@ export const updateOrderStatus = createAction(
     return (success: number, failure: number) => resolve({ success, failure });
   }
 );
+
+export const addNotification = createAction("@notification/add", resolve => {
+  return (type:string, msg: string) =>  resolve({type, msg});
+})

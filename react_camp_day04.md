@@ -55,3 +55,26 @@ if (!monitoring) {
 
 > 리덕스는 동기식으로 동작한다.
 > 디스패치하면 바로 실행되서 그 다음줄에 값을 가져오면 변경된 값을 가져온다.
+
+
+
+> redux-saga api 호출에 대한 오류 부분은 try ~ catch 에서 잡으면 잡을수 있다. 원래 Promise에러는 promise.catch()에서  해결해야하는데 이부분을  redux-saga에서 해주고 있다 
+
+
+
+
+
+## Redux-devtools 설정 
+
+```javascript
+// 설치
+$ npm i redux-devtools-extension
+
+
+// root.js 설정 
+import { composeWithDevTools } from "redux-devtools-extension";
+
+// store 생성시 composeWithDevTools함수로 미들웨어를 감싸줘면된다. 
+const store = createStore(reducers, composeWithDevTools(applyMiddleware(sagaMiddleware)));
+```
+
