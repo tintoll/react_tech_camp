@@ -2,6 +2,8 @@ export interface INotification {
   id: number;
   type: string;
   msg: string;
+  show : boolean;
+  timestamp : number;
 }
 
 export interface ITimelineItem {

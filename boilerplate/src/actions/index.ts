@@ -26,6 +26,12 @@ export const addNotification = createAction("@notification/add", resolve => {
   return (type:string, msg: string) =>  resolve({type, msg});
 })
 
+export const showedNotification = createAction("@notification/showed",
+  resolve => {
+    return (id:number) => resolve({id});
+  }
+);
+
 export const showOrderTimelineChart = createAction(
   "@command/timeline/chart/show",
   resolve => {

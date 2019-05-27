@@ -13,6 +13,16 @@ import * as Actions from "../actions";
 import * as Api from "../api/orders";
 import moment from "moment";
 import { StoreState } from "../types";
+
+function* fetchOrderTimeline() {
+  const {
+    results: { successTimeline, failureTimeline }
+  } = yield call(Api.fetchOrderTimeline, moment().format("YYYYMMDD"));
+
+  yield put(Actions.updateOrderTimeline(successTimeline, failureTimeline));
+}
+
+
 function* monitoringWorkflow() {
   while (true) {
     yield take(getType(Actions.startMonitoring));
@@ -60,12 +70,7 @@ function* monitoringWorkflow() {
   }
 }
 
-function* fetchOrderTimeline() {
-  const {
-    results: { successTimeline, failureTimeline }
-  } = yield call(Api.fetchOrderTimeline, moment().format("YYYYMMDD"));
-  yield put(Actions.updateOrderTimeline(successTimeline, failureTimeline));
-}
+
 function* watchFetchOrderTimeline() {
   yield takeLatest(getType(Actions.showOrderTimelineChart), fetchOrderTimeline);
 }

@@ -1,4 +1,4 @@
-import { StoreState, ITimelineItem } from "../types";
+import { StoreState } from "../types";
 import * as Actions from "../actions";
 import { getType, ActionType } from "typesafe-actions";
 
@@ -44,7 +44,10 @@ const mainReducers = (
         ...state,
         notifications: [
           ...state.notifications,
-          { id: Date.now(), ...action.payload }
+          { id: Date.now(), ...action.payload,
+            show: false,
+            timestamp: Date.now()
+          }
         ]
       };
     case getType(Actions.showOrderTimelineChart):
@@ -79,6 +82,12 @@ const mainReducers = (
           };
         })
       };
+    case getType(Actions.showedNotification):
+      return{
+        ...state,
+        notifications : state.notifications.map(noti => 
+          noti.id === action.payload.id ? {...noti, show : true} : noti )
+      }  
     default:
       return Object.assign({}, state);
   }
