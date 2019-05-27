@@ -7,11 +7,11 @@
       "dom",
       "es2015"
     ],
+    "esModuleInterop": true,
     "jsx": "preserve",
     "target": "es5",
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,

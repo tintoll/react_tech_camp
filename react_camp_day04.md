@@ -78,3 +78,35 @@ import { composeWithDevTools } from "redux-devtools-extension";
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(sagaMiddleware)));
 ```
 
+
+
+
+
+## 컴포넌트 널처리 관련
+
+리액트를 하다보면 어떤 조건일때는 컴포넌트를 안보여주는 경우가 있다. 
+
+이럴경우 ``조건 ? 컴포넌트 :  null`` 이런식으로 많이 사용한다.  이러면  render 부분에서 보기 좋지 않기때문에 해당 부분을 컴포넌트로 만들어 놓으면 편하다.
+
+```typescript
+// Maybe.tsx
+import * as React from 'react';
+
+interface IProps {
+  test : boolean;
+  children : React.ReactNode
+}
+
+export const Maybe: React.FC<IProps> = ({test, children}) =>(
+  <React.Fragment>{test ? children : null}</React.Fragment>
+)
+
+
+// 불러오는 부분에는 아래와 같이 불러오면 된다. 
+<Maybe>
+	<TinyChart></TinyChart>
+</Maybe>
+```
+
+
+

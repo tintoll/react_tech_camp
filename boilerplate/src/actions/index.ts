@@ -25,3 +25,32 @@ export const updateOrderStatus = createAction(
 export const addNotification = createAction("@notification/add", resolve => {
   return (type:string, msg: string) =>  resolve({type, msg});
 })
+
+export const showOrderTimelineChart = createAction(
+  "@command/timeline/chart/show",
+  resolve => {
+    return () => resolve();
+  }
+);
+
+export const hideOrderTimelineChart = createAction(
+  "@command/timeline/chart/hide",
+  resolve => {
+    return () => resolve();
+  }
+);
+
+
+export const fetchOrderTimeline = createAction(
+  "@fetch/order/timeline",
+  resolve => {
+    return (date: string) => resolve(date);
+  }
+);
+
+export const updateOrderTimeline = createAction(
+  "@udpate/order/timeline",
+  resolve => {
+    return (success: [], failure: []) => resolve({ success, failure });
+  }
+);

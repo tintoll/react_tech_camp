@@ -1,28 +1,30 @@
 import * as React from "react";
-import { MonitorCard, Counter } from "../components";
+import { MonitorCard, Counter, Maybe, TinyChart } from "../components";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { StoreState } from "../types";
+import { StoreState, ITimelineItem } from "../types";
 
 interface OrderStatusProps {
   success: number;
   failure: number;
+  showTimeline : boolean;
+  successTimeline : ITimelineItem[];
+  failureTimeline : ITimelineItem[];
 }
 
-interface OrderStatusState {
-  errorRate: string;
-}
 
-const mapStateToProps = (state: StoreState) => ({
-  ...state
-});
+const mapStateToProps = (state: StoreState) => {
+  return {
+    showTimeline : state.showTimeline,
+    success : state.success,
+    failure : state.failure,
+    successTimeline : state.successTimeline,
+    failureTimeline : state.failureTimeline
+  }
+};
 
-class OrderStatus extends React.PureComponent<
-  OrderStatusProps,
-  OrderStatusState
-> {
+class OrderStatus extends React.PureComponent<OrderStatusProps> {
   state = {
-    errorRate: "0"
+    errorRate: 0
   };
 
   componentDidUpdate(prevProps: any) {
@@ -42,8 +44,24 @@ class OrderStatus extends React.PureComponent<
   render() {
     return (
       <MonitorCard>
-        <Counter title="Success" count={this.props.success} />
-        <Counter title="Failure" count={this.props.failure} color="red" />
+        <Counter title="Success" count={this.props.success}>
+          <Maybe test={this.props.showTimeline}>
+            <TinyChart 
+              source={this.props.successTimeline.slice(
+                this.props.successTimeline.length - 10
+              )}
+            />
+          </Maybe>  
+        </Counter>
+        <Counter title="Failure" count={this.props.failure} color="red">
+          <Maybe test={this.props.showTimeline}>
+            <TinyChart
+              source={this.props.failureTimeline.slice(
+                this.props.failureTimeline.length - 10
+              )}
+            />
+          </Maybe>
+        </Counter>  
         <Counter title="Error Rate" count={this.state.errorRate} unit="%" />
       </MonitorCard>
     );

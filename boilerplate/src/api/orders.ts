@@ -34,13 +34,20 @@ interface INumberOfFailedOrderResponse extends IApiSuccessMessage {
   };
 }
 
+interface IOrderTimelineResponse extends IApiSuccessMessage {
+  results: {
+    successTimeline: [];
+    failureTimeline: [];
+  };
+}
+
 export function fetchNumberOfSuccessfulOrder(): Promise<
   INumberOfSuccessfulOrderResponse
 > {
   // 한번 더 Wrapping 해준거임. axios에서 다른걸로 변경하기 쉽게
   return new Promise((resolve, reject) => {
     axios
-      .get(`${endpoint.orders.request.success}?error=random`)
+      .get(endpoint.orders.request.success({ error: true }))
       .then((resp: AxiosResponse) => resolve(resp.data))
       .catch((err:AxiosError ) => reject(new ApiError(err)) );
   });
@@ -49,8 +56,17 @@ export function fetchNumberOfSuccessfulOrder(): Promise<
 export function fetchNumberOfFailedOrder(): Promise<INumberOfFailedOrderResponse> {
   return new Promise((resolve, reject) => {
     axios
-      .get(endpoint.orders.request.failure)
+      .get(endpoint.orders.request.failure())
       .then((resp: AxiosResponse) => resolve(resp.data))
       .catch((err: AxiosError) => reject(new ApiError(err)));
   });
+}
+
+export function fetchOrderTimeline(date:string):Promise<IOrderTimelineResponse> {
+  return new Promise( (resolve, reject) => {
+    axios
+      .get(endpoint.orders.request.timeline(date))
+      .then((resp: AxiosResponse) => resolve(resp.data))
+      .catch((err: AxiosError) => reject(new ApiError(err)));
+  })
 }

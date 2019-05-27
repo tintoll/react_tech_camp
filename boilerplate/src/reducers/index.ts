@@ -1,4 +1,4 @@
-import { StoreState } from "../types";
+import { StoreState, ITimelineItem } from "../types";
 import * as Actions from "../actions";
 import { getType, ActionType } from "typesafe-actions";
 
@@ -8,6 +8,9 @@ const initState: StoreState = {
   success: 0,
   failure: 0,
   notifications : [],
+  successTimeline: [],
+  failureTimeline: [],
+  showTimeline: false,
 };
 const mainReducers = (
   state: StoreState = initState,
@@ -44,6 +47,23 @@ const mainReducers = (
           {id : Date.now(), ...action.payload}
         ]  
       }
+    case getType(Actions.showOrderTimelineChart):
+      return {
+        ...state,
+        showTimeline: true
+      };
+    case getType(Actions.hideOrderTimelineChart):
+      return {
+        ...state,
+        showTimeline: false
+      }; 
+    case getType(Actions.updateOrderTimeline):
+      const { success, failure } = action.payload;
+      return {
+        ...state,
+        successTimeline: success.map(([time, count]) => ({ time, count })),
+        failureTimeline: failure.map(([time, count]) => ({ time, count }))
+      };  
     default:
       return Object.assign({}, state);
   }

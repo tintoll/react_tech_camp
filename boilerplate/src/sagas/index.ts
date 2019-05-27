@@ -1,7 +1,8 @@
-import { fork, all, take, select, delay, put, call } from "redux-saga/effects";
+import { fork, all, take, select, delay, put, call, takeLatest } from "redux-saga/effects";
 import { getType } from "typesafe-actions";
 import * as Actions from "../actions";
 import * as Api from "../api/orders";
+import moment from "moment";
 
 function* monitoringWorkflow() {
   while (true) {
@@ -45,7 +46,16 @@ function* monitoringWorkflow() {
   }
 }
 
+function* fetchOrderTimeline() {
+  const { results : {successTimeline, failureTimeline}} = yield call(Api.fetchOrderTimeline, moment().format('YYYYMMDD'));
+  yield put(Actions.updateOrderTimeline(successTimeline, failureTimeline));
+}
+function* watchFetchOrderTimeline() {
+  yield takeLatest(getType(Actions.showOrderTimelineChart), fetchOrderTimeline);
+}
+
 export default function*() {
   // 비동기적 waiting
   yield fork(monitoringWorkflow);
+  yield fork(watchFetchOrderTimeline);
 }
