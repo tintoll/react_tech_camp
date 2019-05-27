@@ -7,10 +7,10 @@ const initState: StoreState = {
   monitoringDuration: 200,
   success: 0,
   failure: 0,
-  notifications : [],
+  notifications: [],
   successTimeline: [],
   failureTimeline: [],
-  showTimeline: false,
+  showTimeline: false
 };
 const mainReducers = (
   state: StoreState = initState,
@@ -39,14 +39,14 @@ const mainReducers = (
         ...state,
         ...action.payload
       };
-    case getType(Actions.addNotification) :
+    case getType(Actions.addNotification):
       return {
         ...state,
-        notifications : [
+        notifications: [
           ...state.notifications,
-          {id : Date.now(), ...action.payload}
-        ]  
-      }
+          { id: Date.now(), ...action.payload }
+        ]
+      };
     case getType(Actions.showOrderTimelineChart):
       return {
         ...state,
@@ -56,14 +56,29 @@ const mainReducers = (
       return {
         ...state,
         showTimeline: false
-      }; 
+      };
     case getType(Actions.updateOrderTimeline):
       const { success, failure } = action.payload;
+      // return {
+      //   ...state,
+      //   successTimeline: success.map(([time, count]) => ({ time, count })),
+      //   failureTimeline: failure.map(([time, count]) => ({ time, count }))
+      // };
       return {
         ...state,
-        successTimeline: success.map(([time, count]) => ({ time, count })),
-        failureTimeline: failure.map(([time, count]) => ({ time, count }))
-      };  
+        successTimeline: success.map(arr => {
+          return {
+            time: arr[0],
+            count: arr[1]
+          };
+        }),
+        failureTimeline: failure.map(arr => {
+          return {
+            time: arr[0],
+            count: arr[1]
+          };
+        })
+      };
     default:
       return Object.assign({}, state);
   }
