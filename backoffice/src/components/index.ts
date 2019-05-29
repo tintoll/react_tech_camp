@@ -5,3 +5,4 @@ export * from "./PlayButton";
 export * from "./Toggle";
 export * from "./TinyChart";
 export * from "./Maybe";
+export * from "./PageHeader";

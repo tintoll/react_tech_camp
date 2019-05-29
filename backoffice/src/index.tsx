@@ -7,7 +7,11 @@ import { IStoreState } from "./store";
 import reducer from "./reducers";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./sagas";
-import App from "./App";
+import App from "./router";
+
+import "./sass/main.scss";
+import "antd/dist/antd.css";
+
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
