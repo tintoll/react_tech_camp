@@ -94,7 +94,9 @@ class LayoutContainer extends React.PureComponent {
                     </span>
                   }
                 >
-                  <Menu.Item key="1">사용자 관리</Menu.Item>
+                  <Menu.Item key="1">
+                    <Link to="/settings/users">사용자 관리</Link>
+                  </Menu.Item>
                   <Menu.Item key="2">권한 관리</Menu.Item>
                 </SubMenu>
               </Menu>
