@@ -3,6 +3,7 @@ import { IStoreState, ITimelineItem } from "../store";
 import * as Actions from "../actions";
 
 const initializeState: IStoreState = {
+  authentication : {token : null},
   monitoring: false,
   showTimeline: false,
   duration: 200,

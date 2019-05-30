@@ -11,7 +11,12 @@ export interface ITimelineItem {
   count: number;
 }
 
+export interface IAuthentication {
+  token: string | null;
+}
+
 export interface IStoreState {
+  authentication : IAuthentication;
   monitoring: boolean;
   showTimeline: boolean;
   duration: number;
@@ -21,3 +26,4 @@ export interface IStoreState {
   successTimeline: ITimelineItem[];
   failureTimeline: ITimelineItem[];
 }
+
