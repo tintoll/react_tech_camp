@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Row, Col, Card } from "antd";
-import { OrderStatusContiner } from "../containers";
+import { OrderListContailner } from "../containers";
 import { PageHeader } from "../components";
 
 export default class Order extends React.PureComponent {
@@ -8,6 +8,7 @@ export default class Order extends React.PureComponent {
     return (
       <React.Fragment>
         <PageHeader label="주문" />
+        <OrderListContailner />
       </React.Fragment>
     );
   }

@@ -6,3 +6,4 @@ export * from "./Toggle";
 export * from "./TinyChart";
 export * from "./Maybe";
 export * from "./PageHeader";
+export * from './OrderList';
