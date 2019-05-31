@@ -206,6 +206,7 @@ export const OrderList : React.FC = () => (
       <NotificationContainer />
       <Switch>
       	// 로그인은 전체사이즈를 구현하기 위해 FullSizeLayout을 구현 
+        // component속성말고 children으로 컴포넌트를 설정할수도 있다.
         <Route exact path="/login">
           <FullSizeLayout>
             <Pages.Login />
@@ -281,7 +282,6 @@ class LoginComponent extends React.PureComponent<IProps & ILoginComponentProps> 
           <Form.Item>
           
             {
-          		// 어떤 속성으로 체크해? Input은 안해줘도됨.
           		getFieldDecorator("username", {
               rules: [{ required: true, message: "아이디좀..." }]
             })(
@@ -309,7 +309,8 @@ class LoginComponent extends React.PureComponent<IProps & ILoginComponentProps> 
           </Form.Item>
           <Form.Item>
             {
-            // 어떤 속성으로 체크해? Input은 안해줘도됨.
+           	 // valuePropName에 어떤 속성으로 체크표시하는지 정해줘야한다.
+             // Input은 안해줘도됨.
             	getFieldDecorator("remember", {
               valuePropName: "checked",
               initialValue: true
@@ -333,5 +334,13 @@ class LoginComponent extends React.PureComponent<IProps & ILoginComponentProps> 
 }
 // antd의 Form관련 처리를 위해서 Form.create로 Wrapping해줘야한다. 
 export const Login = Form.create({name:"loginForm"})(LoginComponent);
+```
+
+
+
+#### redux-saga 에서 store 정보 가져오는 effect
+
+```javascript
+let { authentication } = yield select();
 ```
 
