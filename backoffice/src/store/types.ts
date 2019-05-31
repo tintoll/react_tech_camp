@@ -12,11 +12,13 @@ export interface ITimelineItem {
 }
 
 export interface IAuthentication {
+  name : string;
+  picture : string;
   token: string | null;
 }
 
 export interface IStoreState {
-  authentication : IAuthentication;
+  authentication: IAuthentication | null;
   monitoring: boolean;
   showTimeline: boolean;
   duration: number;

@@ -1,4 +1,5 @@
 import { createAction } from "typesafe-actions";
+import { IAuthentication } from "../store";
 
 export const addNotification = createAction("@notification/add", resolve => {
   return (type: string, msg: string) => resolve({ type, msg });
@@ -58,4 +59,23 @@ export const updateOrderTimeline = createAction(
   resolve => {
     return (success: [], failure: []) => resolve({ success, failure });
   }
+);
+
+export const requestLogin = createAction(
+  "@request/login",
+  resolve => (username: string, password: string) =>
+    resolve({ username, password })
+);
+
+export const requestLogout = createAction("@request/logout", resolve => () =>
+  resolve()
+);
+
+export const successLogin = createAction(
+  "@success/login",
+  resolve => (data: IAuthentication) => resolve(data)
+);
+
+export const successLogout = createAction("@success/logout", resolve => () =>
+  resolve()
 );

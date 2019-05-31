@@ -2,6 +2,9 @@ const SERVER = "https://codebrew.kr";
 const API_PREFIX = "openapi";
 
 interface Config {
+  auth: {
+    login(): string;
+  };
   orders: {
     request: {
       success(options: { error?: boolean }): string;
@@ -13,6 +16,9 @@ interface Config {
 
 // process.env.production 분기!!
 const config: Config = {
+  auth: {
+    login: () => `${SERVER}/${API_PREFIX}/auth/login`
+  },
   orders: {
     request: {
       success: ({ error = false }) =>

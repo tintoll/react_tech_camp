@@ -12,7 +12,7 @@ interface IProps {
   page: RoutePageComponent;
 }
 interface IStateToProps {
-  authentication : IAuthentication;
+  authentication : IAuthentication | null;
 }
 
 // mapStateToProps 2개의 인자를 받게끔 되어 있다. 
@@ -41,7 +41,7 @@ const PrivateRoute: React.FC<IProps & IStateToProps & RouteProps> = props => {
 
       // 렌더링할 부분을 함수로 구현을 할수 있음.
       render={props=>{
-        if (authentication.token) {
+        if (authentication) {
           return <Page {...props} />;
         } else {
           return (

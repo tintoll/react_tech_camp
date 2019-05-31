@@ -180,3 +180,158 @@ export const OrderList : React.FC = () => (
 )
 ```
 
+
+
+#### antd로 전체화면에 중앙에 로그인 화면 붙이기
+
+```typescript
+<Row
+      type="flex"
+      justify="space-around"
+      align="middle"
+      style={{
+        height : "100vh"
+      }}
+    >
+      <Col>{props.children}</Col>
+</Row>
+```
+
+
+
+#### 멀티레이아웃
+
+```typescript
+		<BrowserRouter>
+      <NotificationContainer />
+      <Switch>
+      	// 로그인은 전체사이즈를 구현하기 위해 FullSizeLayout을 구현 
+        <Route exact path="/login">
+          <FullSizeLayout>
+            <Pages.Login />
+          </FullSizeLayout>
+        </Route>
+
+        <DefaultLayout>
+          <Switch>
+            <PrivateRoute exact path="/" page={Pages.Dashboard} />
+            <PrivateRoute exact path="/orders" page={Pages.Order} />
+            <Route component={Pages.PageNotFound} />
+          </Switch>
+        </DefaultLayout>
+      </Switch>
+    </BrowserRouter>
+```
+
+
+
+#### antd에서 Form 관련 처리 
+
+```typescript
+import * as React from 'react';
+import { IAuthentication } from "../store";
+import { Card, Form, Icon, Input, Button, Checkbox } from "antd";
+import { Redirect } from "react-router-dom";
+
+export interface ILoginComponentProps {
+  authentication: IAuthentication | null;
+  requestLogin(username:string, password:string) : void;
+}
+
+interface IProps {
+  form : any;
+}
+
+class LoginComponent extends React.PureComponent<IProps & ILoginComponentProps> {
+  onSubmit = (event:any) => {
+    event.preventDetault();
+
+    // antd Form에서 validatation을 해준다. 
+    this.props.form.validateFields((err:any, values:any) => {
+      if(err) return;
+
+      this.props.requestLogin(values.username, values.password);
+    });
+  }
+  render() {
+
+    const { getFieldDecorator } = this.props.form;
+    if(this.props.authentication) {
+      return (
+        <Redirect 
+          to={{
+            pathname : "/"
+          }}
+        />
+      )
+    }
+    return (
+      <Card
+        style={{
+          width: 400,
+          padding: 30
+        }}
+      >
+        <Form
+          onSubmit={this.onSubmit}
+          style={{
+            maxWidth: 300
+          }}
+        >
+          <Form.Item>
+          
+            {
+          		// 어떤 속성으로 체크해? Input은 안해줘도됨.
+          		getFieldDecorator("username", {
+              rules: [{ required: true, message: "아이디좀..." }]
+            })(
+              <Input
+                prefix={
+                  <Icon type="user" style={{ color: "black", opacity: 0.2 }} />
+                }
+                placeholder="Username"
+              />
+            )}
+          </Form.Item>
+          <Form.Item>
+            
+            {getFieldDecorator("password", {
+              rules: [{ required: true, message: "비번좀..." }]
+            })(
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: "black", opacity: 0.2 }} />
+                }
+                type="password"
+                placeholder="Password"
+              />
+            )}
+          </Form.Item>
+          <Form.Item>
+            {
+            // 어떤 속성으로 체크해? Input은 안해줘도됨.
+            	getFieldDecorator("remember", {
+              valuePropName: "checked",
+              initialValue: true
+            })(<Checkbox>나 좀 기억해줘</Checkbox>)}
+            <br />
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{
+                width: "100%"
+              }}
+            >
+              로그인
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    )
+  }
+
+}
+// antd의 Form관련 처리를 위해서 Form.create로 Wrapping해줘야한다. 
+export const Login = Form.create({name:"loginForm"})(LoginComponent);
+```
+

@@ -3,7 +3,7 @@ import { IStoreState, ITimelineItem } from "../store";
 import * as Actions from "../actions";
 
 const initializeState: IStoreState = {
-  authentication : {token : 'blabla'},
+  authentication : null,
   monitoring: false,
   showTimeline: false,
   duration: 200,
@@ -19,6 +19,11 @@ export default (
   action: ActionType<typeof Actions>
 ) => {
   switch (action.type) {
+    case getType(Actions.successLogin):
+      return {
+        ...state,
+        authentication: { ...action.payload }
+      };
     case getType(Actions.startMonitoring):
       return {
         ...state,

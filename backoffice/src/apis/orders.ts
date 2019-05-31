@@ -42,6 +42,16 @@ interface IOrderTimelineResponse extends IApiSuccessMessage {
   };
 }
 
+export function requestLogin(username: string, password: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    console.log({ username, password });
+    axios
+      .post(endpoint.auth.login(), { username, password })
+      .then((resp: AxiosResponse) => resolve(resp.data))
+      .catch((err: AxiosError) => reject(new ApiError(err)));
+  });
+}
+
 export function fetchNumberOfSuccessfulOrder(): Promise<
   INumberOfSuccessfulOrderResponse
 > {
