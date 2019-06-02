@@ -344,3 +344,24 @@ export const Login = Form.create({name:"loginForm"})(LoginComponent);
 let { authentication } = yield select();
 ```
 
+
+
+
+
+#### 리덕스 생성 옵션
+
+```typescript
+// createStore에서 2번째 인자가 함수면 미들웨어로 인식하고, 객체이면 초기상태값으로 인식한다.
+// 이부분에 인증정보를 넣어주면 새로고침시 로그인이 안되어 있다가 다시 로그인되는 모습이 안보인다. 
+const store = createStore(
+  reducer,
+  authenticationData
+    ? {
+        ...initializeState,
+        authentication: { ...JSON.parse(authenticationData) }
+      }
+    : initializeState,
+  composeWithDevTools(applyMiddleware(sagaMiddleware))
+);
+```
+

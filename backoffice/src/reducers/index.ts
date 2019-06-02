@@ -2,8 +2,8 @@ import { ActionType, getType } from "typesafe-actions";
 import { IStoreState, ITimelineItem } from "../store";
 import * as Actions from "../actions";
 
-const initializeState: IStoreState = {
-  authentication : null,
+export const initializeState: IStoreState = {
+  authentication: null,
   monitoring: false,
   showTimeline: false,
   duration: 200,
