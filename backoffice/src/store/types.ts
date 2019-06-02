@@ -13,7 +13,7 @@ export interface ITimelineItem {
 
 export interface IAuthentication {
   name : string;
-  picture : string;
+  picture : string | null;
   token: string | null;
 }
 

@@ -24,6 +24,11 @@ export default (
         ...state,
         authentication: { ...action.payload }
       };
+    case getType(Actions.successLogout):
+      return {
+        ...state,
+        authentication: null
+      };  
     case getType(Actions.startMonitoring):
       return {
         ...state,
