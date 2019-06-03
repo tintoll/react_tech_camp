@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from "react-redux";
 import { IStoreState, IAuthentication } from "../store";
-import { requestLogout } from "../actions";
+import { requestLogout, openNotificationCenter } from "../actions";
 
 // 로그인 인증관련된 공통부분을 자식에게 주기위해서 만든 컴포넌트
 // connect() 함수는 아래와 비슷한 구조로 구현한라고 보면 된다. 
@@ -21,6 +21,7 @@ export const AuthContainer = connect(
     authentication : state.authentication
   }),
   dispatch => ({
-    requestLogout : () => dispatch(requestLogout())
+    requestLogout : () => dispatch(requestLogout()),
+    openNotificationCenter : () => dispatch(openNotificationCenter())
   })
 )(AuthWrapper);

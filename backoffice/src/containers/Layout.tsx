@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { IStoreState } from "../store";
 import { Row, Col, Layout, Menu, Icon, Drawer } from "antd";
 import { Link, NavLinkProps } from "react-router-dom";
+import { closeNotificationCenter } from "../actions";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -11,19 +12,28 @@ const { SubMenu } = Menu;
 interface IProps {
   location?: any;
   children?: React.ReactNode;
+  openNotificationCenter : boolean;
+  closeNotificationCenter() : void;
 }
 
 const mapStateToProps = (state: IStoreState) => {
-  return {};
+  return {
+    openNotificationCenter : state.openNotificationCenter
+  };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  closeNotificationCenter: () => dispatch(closeNotificationCenter())
+});
 
 class LayoutContainer extends React.PureComponent<IProps, NavLinkProps> {
   render() {
     return (
       <Layout style={{ height: "100vh" }}>
-        <Drawer title="알림" placement="right" closable={false} visible={false}>
+        <Drawer title="알림" placement="right" 
+          closable={true} 
+          visible={this.props.openNotificationCenter}
+          onClose={ () => this.props.closeNotificationCenter()}>
           <p>Some contents...</p>
           <p>Some contents...</p>
           <p>Some contents...</p>

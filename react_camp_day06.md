@@ -399,3 +399,25 @@ export const AuthContainer = connect(
 )(AuthWrapper);
 ```
 
+
+
+#### 비동기 관련 액션처리
+
+비동기로 호출하는 액션을 처리할때는 대부분 3가지 액션을 가지고 간다. 
+
+요청하는 액션 ``@request/`` 
+
+성공하는 액션 ``@success/``
+
+실패하는 액션 ``@failure/``
+
+
+
+#### 구조분해할당
+
+구조분해 할당시 아래와 같이 2뎁스 안까지 구조분해할 수 있다.
+
+```typescript
+const { payload: { username, password } } = yield take(getType(Actions.requestLogin));
+```
+

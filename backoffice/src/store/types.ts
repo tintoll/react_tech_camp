@@ -20,6 +20,7 @@ export interface IAuthentication {
 export interface IStoreState {
   authentication: IAuthentication | null;
   monitoring: boolean;
+  openNotificationCenter : boolean;
   showTimeline: boolean;
   duration: number;
   notifications: INotification[];

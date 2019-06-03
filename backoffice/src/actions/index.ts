@@ -12,6 +12,20 @@ export const showedNotification = createAction(
   }
 );
 
+export const openNotificationCenter = createAction(
+  "@command/notification-center/open",
+  resolve => {
+    return () => resolve();
+  }
+);
+
+export const closeNotificationCenter = createAction(
+  "@command/notification-center/close",
+  resolve => {
+    return () => resolve();
+  }
+);
+
 export const showOrderTimelineChart = createAction(
   "@command/timeline/chart/show",
   resolve => {
