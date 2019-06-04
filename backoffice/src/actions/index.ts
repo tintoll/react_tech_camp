@@ -1,5 +1,5 @@
 import { createAction } from "typesafe-actions";
-import { IAuthentication } from "../store";
+import { IAuthentication, IShopObj } from "../store";
 
 export const addNotification = createAction("@notification/add", resolve => {
   return (type: string, msg: string) => resolve({ type, msg });
@@ -92,4 +92,18 @@ export const successLogin = createAction(
 
 export const successLogout = createAction("@success/logout", resolve => () =>
   resolve()
+);
+
+// 비동기 처리 관련 액션
+export const requestShopList = createAction(
+  "@request/shop/list",
+  resolve => () => resolve()
+);
+export const successShopList = createAction(
+  "@success/shop/list",
+  resolve => (data: IShopObj) => resolve(data)
+);
+export const failureShopList = createAction(
+  "@failure/shop/list",
+  resolve => () => resolve()
 );

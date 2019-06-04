@@ -5,14 +5,15 @@ import * as Actions from "../actions";
 export const initializeState: IStoreState = {
   authentication: null,
   monitoring: false,
-  openNotificationCenter : false,
+  openNotificationCenter: false,
   showTimeline: false,
   duration: 200,
   notifications: [],
   success: 0,
   failure: 0,
   successTimeline: [],
-  failureTimeline: []
+  failureTimeline: [],
+  shopList: []
 };
 
 export default (
@@ -20,6 +21,12 @@ export default (
   action: ActionType<typeof Actions>
 ) => {
   switch (action.type) {
+    case getType(Actions.successShopList):
+      return {
+        ...state,
+        shopList: action.payload.rows
+      };
+
     case getType(Actions.openNotificationCenter):
       return {
         ...state,
@@ -39,7 +46,7 @@ export default (
       return {
         ...state,
         authentication: null
-      };  
+      };
     case getType(Actions.startMonitoring):
       return {
         ...state,

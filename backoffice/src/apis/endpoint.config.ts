@@ -5,6 +5,9 @@ interface Config {
   auth: {
     login(): string;
   };
+  shops: {
+    list(): string;
+  };
   orders: {
     request: {
       success(options: { error?: boolean }): string;
@@ -19,11 +22,14 @@ const config: Config = {
   auth: {
     login: () => `${SERVER}/${API_PREFIX}/auth/login`
   },
+  shops: {
+    list: () => `${SERVER}/${API_PREFIX}/shops`
+  },
   orders: {
     request: {
       success: ({ error = false }) =>
         `${SERVER}/${API_PREFIX}/orders/request/success${
-        error ? "?error=random" : ""
+          error ? "?error=random" : ""
         }`,
       failure: () => `${SERVER}/${API_PREFIX}/orders/request/failure`,
       timeline: date => `${SERVER}/${API_PREFIX}/orders/request/all/${date}`

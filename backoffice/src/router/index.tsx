@@ -1,11 +1,15 @@
 import * as React from "react";
-import { BrowserRouter, Route , Switch} from "react-router-dom";
-import { DefaultLayout, FullSizeLayout, NotificationContainer } from "../containers";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import {
+  DefaultLayout,
+  FullSizeLayout,
+  NotificationContainer
+} from "../containers";
 import * as Pages from "../pages";
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from "./PrivateRoute";
 
 interface IProps {}
-const Router : React.FC<IProps> = () => {
+const Router: React.FC<IProps> = () => {
   return (
     <BrowserRouter>
       <NotificationContainer />
@@ -20,12 +24,13 @@ const Router : React.FC<IProps> = () => {
           <Switch>
             <PrivateRoute exact path="/" page={Pages.Dashboard} />
             <PrivateRoute exact path="/orders" page={Pages.Order} />
+            <PrivateRoute exact path="/shops" page={Pages.Shops} />
             <Route component={Pages.PageNotFound} />
           </Switch>
         </DefaultLayout>
       </Switch>
     </BrowserRouter>
-  )
-}
+  );
+};
 
 export default Router;

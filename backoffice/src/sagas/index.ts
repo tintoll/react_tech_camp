@@ -65,6 +65,7 @@ function* monitoringWorkflow() {
 }
 
 function* watchFetchOrderTimeline() {
+  // takeLatest : 여러번 호출해도 마지막에 들어온 것만 처리한다.
   yield takeLatest(getType(Actions.showOrderTimelineChart), fetchOrderTimeline);
 }
 
@@ -106,8 +107,26 @@ function* authenticationWorkflow() {
   }
 }
 
+function* watchRequestShopList() {
+  while (true) {
+    try {
+      yield take(getType(Actions.requestShopList));
+      const response = yield call(Api.fetchShops);
+      console.log(response);
+      yield put(Actions.successShopList({ rows: response.rows }));
+    } catch (e) {
+      if (e instanceof Api.ApiError) {
+        yield put(Actions.addNotification("error", e.errorMessage));
+      } else {
+        console.error(e);
+      }
+    }
+  }
+}
+
 export default function*() {
   yield fork(monitoringWorkflow);
   yield fork(authenticationWorkflow);
   yield fork(watchFetchOrderTimeline);
+  yield fork(watchRequestShopList);
 }

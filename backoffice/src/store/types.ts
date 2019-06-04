@@ -12,15 +12,29 @@ export interface ITimelineItem {
 }
 
 export interface IAuthentication {
-  name : string;
-  picture : string | null;
+  name: string;
+  picture: string | null;
   token: string | null;
+}
+
+export interface IShopObj {
+  rows: IShop[];
+}
+export interface IShop {
+  address: string;
+  categorey: string;
+  createDate: string;
+  geoLocation: [];
+  id: number;
+  ownerName: string;
+  phone: string;
+  shopName: string;
 }
 
 export interface IStoreState {
   authentication: IAuthentication | null;
   monitoring: boolean;
-  openNotificationCenter : boolean;
+  openNotificationCenter: boolean;
   showTimeline: boolean;
   duration: number;
   notifications: INotification[];
@@ -28,5 +42,5 @@ export interface IStoreState {
   failure: number;
   successTimeline: ITimelineItem[];
   failureTimeline: ITimelineItem[];
+  shopList: IShop[];
 }
-

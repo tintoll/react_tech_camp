@@ -84,3 +84,12 @@ export function fetchOrderTimeline(
       .catch((err: AxiosError) => reject(new ApiError(err)));
   });
 }
+
+export function fetchShops(): Promise<IOrderTimelineResponse> {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(endpoint.shops.list())
+      .then((resp: AxiosResponse) => resolve(resp.data))
+      .catch((err: AxiosError) => reject(new ApiError(err)));
+  });
+}
