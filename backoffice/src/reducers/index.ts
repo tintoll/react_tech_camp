@@ -13,7 +13,8 @@ export const initializeState: IStoreState = {
   failure: 0,
   successTimeline: [],
   failureTimeline: [],
-  shopList: []
+  shopList: [],
+  asyncTasks: []
 };
 
 export default (
@@ -21,6 +22,20 @@ export default (
   action: ActionType<typeof Actions>
 ) => {
   switch (action.type) {
+    case getType(Actions.createAsyncTask):
+      return {
+        ...state,
+        asyncTasks: [
+          ...state.asyncTasks,
+          {
+            id: action.payload.id,
+            action: action.payload.action,
+            complete: false,
+            timestamp: Date.now()
+          }
+        ]
+      };
+
     case getType(Actions.successShopList):
       return {
         ...state,

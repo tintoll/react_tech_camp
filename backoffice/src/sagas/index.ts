@@ -13,6 +13,7 @@ import { getType } from "typesafe-actions";
 import * as Actions from "../actions";
 import * as Api from "../apis/orders";
 import { IStoreState } from "../store";
+import { isAsycAction, getAsyncId } from "../actions/tookit";
 
 function* fetchOrderTimeline() {
   const {
@@ -124,9 +125,21 @@ function* watchRequestShopList() {
   }
 }
 
+function* watchAsyncTask() {
+  while (true) {
+    // *는 모든 액션을 다 받는다
+    const action = yield take("*");
+    if (isAsycAction(action)) {
+      // dispatch action
+      yield put(Actions.createAsyncTask(getAsyncId(action), action.type));
+    }
+  }
+}
+
 export default function*() {
   yield fork(monitoringWorkflow);
   yield fork(authenticationWorkflow);
   yield fork(watchFetchOrderTimeline);
   yield fork(watchRequestShopList);
+  yield fork(watchAsyncTask);
 }

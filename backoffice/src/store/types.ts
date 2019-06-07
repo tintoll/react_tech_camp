@@ -20,6 +20,15 @@ export interface IAuthentication {
 export interface IShopObj {
   rows: IShop[];
 }
+
+export type FinishStatus = "success" | "failure";
+export interface IAsyncTaskStatus {
+  id: string;
+  action: string;
+  complete: boolean;
+  completeStatus?: FinishStatus;
+  timestamp: number;
+}
 export interface IShop {
   address: string;
   categorey: string;
@@ -43,4 +52,5 @@ export interface IStoreState {
   successTimeline: ITimelineItem[];
   failureTimeline: ITimelineItem[];
   shopList: IShop[];
+  asyncTasks: IAsyncTaskStatus[];
 }

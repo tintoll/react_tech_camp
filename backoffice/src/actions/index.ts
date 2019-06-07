@@ -1,5 +1,7 @@
 import { createAction } from "typesafe-actions";
-import { IAuthentication, IShopObj } from "../store";
+import { IAuthentication, IShopObj, FinishStatus } from "../store";
+import { createAsyncPayload } from "./tookit";
+import { resolve } from "url";
 
 export const addNotification = createAction("@notification/add", resolve => {
   return (type: string, msg: string) => resolve({ type, msg });
@@ -78,7 +80,8 @@ export const updateOrderTimeline = createAction(
 export const requestLogin = createAction(
   "@request/login",
   resolve => (username: string, password: string) =>
-    resolve({ username, password })
+    // 헬퍼함수로 만들어서 asynTaskId를 자동으로 만들어준다.
+    resolve(createAsyncPayload({ username, password }))
 );
 
 export const requestLogout = createAction("@request/logout", resolve => () =>
@@ -97,7 +100,7 @@ export const successLogout = createAction("@success/logout", resolve => () =>
 // 비동기 처리 관련 액션
 export const requestShopList = createAction(
   "@request/shop/list",
-  resolve => () => resolve()
+  resolve => () => resolve(createAsyncPayload())
 );
 export const successShopList = createAction(
   "@success/shop/list",
@@ -106,4 +109,15 @@ export const successShopList = createAction(
 export const failureShopList = createAction(
   "@failure/shop/list",
   resolve => () => resolve()
+);
+
+export const createAsyncTask = createAction(
+  "@command/async-task/create",
+  resolve => (id: string, action: string) => resolve({ id, action })
+);
+
+export const compoleteAsyncTask = createAction(
+  "@command/async-task/complete",
+  resolve => (id: string, completeStatus: FinishStatus = "success") =>
+    resolve({ id, completeStatus })
 );
